@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { appManager, observerManager } from "../../../../models/AppManager/managers.js";
-import { Table, Input, Container,Row,Col, Form, FormGroup, Label} from 'reactstrap';
+import { Table, Input, Container,Row,Col, Form, FormGroup, Label, Button} from 'reactstrap';
 import Search from '../../../Search/Search.js';
 import PaginationLinks from "../../../PaginationLinks/PaginationLinks.js";
 import utils from '../../../../utils/utils.js';
@@ -216,6 +216,7 @@ const CharacterSet = (input) => {
                                 {makeCharacters(displayedCharacters)}
                                 </tbody>            
                             </Table>
+                            <Button color="primary">Delete Selected</Button>
                             <PaginationLinks 
                                 objectName="characterSet"
                                 pageNumber={pageNumber}

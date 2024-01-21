@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { observerManager } from "../../models/AppManager/managers.js";
-import {Container} from "reactstrap";
-import Admin from '../Admin/Admin.js';
-import Fonts from "../Admin/Fonts/Fonts.js";
-import Font from "../Admin/Font/Font.js";
-import "./AppContainer.scss";
+import { appManager, observerManager } from "../../models/AppManager/managers.js";
+import {Container, Row,Col} from "reactstrap";
+import Font from "./Font/Font.js";
+import Fonts from "./Fonts/Fonts.js";
+import Header from './Header/Header.js';
+import "./Admin.scss";
 
 /***************************************************************/
-const AppContainer = (input) => {
+const Admin = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
     /***************************************************************/
@@ -27,20 +27,28 @@ const AppContainer = (input) => {
         };
 
     }, []);
-    /**************************************************************/
+    /***************************************************************/
     const contentFactory = () => {
-        if(input.parent === "admin"){
-            return <Admin content={input.content}/>
+        if(input.content === "admin.fonts"){
+            return <Fonts/>
         }
-        return null; 
+        else if(input.content === "admin.font"){
+            return <Font/>
+        }
     }
     /***************************************************************/
     return (
-        <div id="main-wrapper">
-            {contentFactory()}
+        <div id="admin-wrapper">
+            <header>
+                <Header/>
+            </header>
+            <section>
+                {contentFactory()}
+            </section>
         </div>
     );
+    /***************************************************************/
 }
 
-export default AppContainer;
+export default Admin;
 /**************************************************************/

@@ -4,21 +4,24 @@ const appRoutes = [
     {
         path: "",
         props: {
-            "content": "main"
+            "content": "main",
+            "parent": null
         },
         component: AppContainer
     },
     {
         path: "/admin/fonts/view/all",
         props: {
-            "content": "fonts"
+            "content": "admin.fonts",
+            "parent": "admin"
         },
         component: AppContainer
     },
     {
         path: "/admin/fonts/view/:id",
         props: {
-            "content": "font"
+            "content": "admin.font",
+            "parent": "admin"
         },
         component: AppContainer
     }

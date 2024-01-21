@@ -89,7 +89,7 @@ const PaginationLinks = (input) => {
     }
     /***************************************************************/
     return (
-        <Pagination>
+        <Pagination className="pagination">
             <PaginationItem>
                 <PaginationLink
                 first

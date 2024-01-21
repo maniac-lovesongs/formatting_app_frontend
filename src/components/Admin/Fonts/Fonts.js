@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { observerManager } from "../../../models/AppManager/managers.js";
-import { Table, Input, Form, FormGroup, Label, Container,Row,Col} from 'reactstrap';
+import { Table, Input, Form, FormGroup, Label, Container,Row,Col, Button} from 'reactstrap';
 import FontStyles from './FontStyles/FontStyles.js';
 import Search from '../../Search/Search.js';
 import PaginationLinks from "../../PaginationLinks/PaginationLinks.js";
@@ -203,6 +203,7 @@ const Fonts = (input) => {
                                 {makeFonts(displayedFonts)}
                                 </tbody>            
                             </Table>
+                            <Button color="primary">Delete Selected</Button>
                             <PaginationLinks 
                                 objectName="fonts"
                                 pageNumber={pageNumber}
