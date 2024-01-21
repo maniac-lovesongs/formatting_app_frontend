@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { observerManager } from "../../models/AppManager/managers.js";
+import Fonts from "../Admin/Fonts/Fonts.js";
 import utils from '../../utils/utils.js';
 import "./AppContainer.scss";
 
@@ -7,29 +8,6 @@ import "./AppContainer.scss";
 const AppContainer = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
-
-    const [data, setdata] = useState({
-        font: "",
-        exists: false
-    });
-    /***************************************************************/
-       // Using useEffect for single rendering
-       useEffect(() => {
-        // Using fetch to fetch the api from 
-        // flask server it will be redirected to proxy
-        fetch(utils.make_backend("/api/fonts/sans_serif/exists")).then((res) => {
-            console.log(res)
-            /*res.json().then((data) => {
-                // Setting a data from api
-                console.log(data)
-                setdata({
-                    font: data.font.name,
-                    exists: data.exists
-                });
-            })*/
-        }
-        );
-    }, []);
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -47,13 +25,18 @@ const AppContainer = (input) => {
         };
 
     }, []);
+
+    /***************************************************************/
+    const contentFactory = () => {
+        if(input.content === "fonts"){
+            return <Fonts/>
+        }
+    }
+    /***************************************************************/
     return (
         <div>
-            <h1>This is the main container</h1>
-            <ul>
-                <li><b>Font: </b> {data.font}</li>
-                <li><b>Exists: </b> {data.exists}</li>
-            </ul>
+            <h1>Admin</h1>
+            {contentFactory()}
         </div>
     );
 }
