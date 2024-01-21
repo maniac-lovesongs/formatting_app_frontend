@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {observerManager} from "../../models/AppManager/managers.js";
-import { Input} from 'reactstrap';
-import "./Search.scss";
+import { observerManager } from "../../../models/AppManager/managers.js";
+import {Row, Col, Input, Form, FormGroup, Label, Button} from 'reactstrap';
+import "./Font.scss";
 
 /***************************************************************/
-const Search = (input) => {
+const FontEditMode = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
+
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -23,28 +24,23 @@ const Search = (input) => {
             setObserverId(null);
         };
 
-    }, []);    
+    }, []);
     /***************************************************************/
     return (
-            <Input
-                onChange={(e) => {
-                    if(e.target.value.trim() === ""){
-                        input.setSearchValue("");
-                        input.handleFilter(null);
-                    }
-                    else{
-                        const temp = input.data.filter((d) => {
-                            const v = e.target.value.trim().toLowerCase();
-                            return input.filter(d, v);
-                        });
-                        input.setSearchValue(e.target.value.trim().toLowerCase());
-                        input.handleFilter(temp);
-                    }
-                }}
-            />
+                <Row xs="1">
+                    <Col className="bg-light border">
+                        <Form>
+                            <FormGroup>
+                                <Label for="fontName"><b>Name</b></Label>
+                                <Input type="text" data-font-id={input.id} value={input.name}/>
+                                <Button color="primary">Edit</Button>
+                            </FormGroup>
+                        </Form>
+                    </Col>
+                </Row>        
     );
     /***************************************************************/
 }
 
-export default Search;
+export default FontEditMode;
 /**************************************************************/

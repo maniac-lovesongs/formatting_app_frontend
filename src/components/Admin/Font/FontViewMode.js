@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {observerManager} from "../../models/AppManager/managers.js";
-import { Input} from 'reactstrap';
-import "./Search.scss";
+import { observerManager } from "../../../models/AppManager/managers.js";
+import { Row, Col} from 'reactstrap';
+import FontStyles from '../Fonts/FontStyles/FontStyles.js';
+import "./Font.scss";
 
 /***************************************************************/
-const Search = (input) => {
+const FontViewMode = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
+
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -23,28 +25,20 @@ const Search = (input) => {
             setObserverId(null);
         };
 
-    }, []);    
+    }, []);
     /***************************************************************/
     return (
-            <Input
-                onChange={(e) => {
-                    if(e.target.value.trim() === ""){
-                        input.setSearchValue("");
-                        input.handleFilter(null);
-                    }
-                    else{
-                        const temp = input.data.filter((d) => {
-                            const v = e.target.value.trim().toLowerCase();
-                            return input.filter(d, v);
-                        });
-                        input.setSearchValue(e.target.value.trim().toLowerCase());
-                        input.handleFilter(temp);
-                    }
-                }}
-            />
+                <Row xs="2">
+                    <Col className="bg-light border">
+                        <b>Name: </b> <p>{input.font.name}</p>
+                    </Col>
+                    <Col className="bg-light border">
+                        <b>Styles: </b>{<FontStyles addLinks={true} fontName={input.font.name} fontId={input.id} styles={input.font.styles} />}                
+                    </Col>
+                </Row>        
     );
     /***************************************************************/
 }
 
-export default Search;
+export default FontViewMode;
 /**************************************************************/
