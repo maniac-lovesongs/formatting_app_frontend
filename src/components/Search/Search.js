@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { observerManager } from "../../models/AppManager/managers.js";
-import Fonts from "../Admin/Fonts/Fonts.js";
-import Font from "../Admin/Font/Font.js";
-import "./AppContainer.scss";
+import {observerManager} from "../../models/AppManager/managers.js";
+import { Input} from 'reactstrap';
+import "./Search.scss";
 
 /***************************************************************/
-const AppContainer = (input) => {
+const Search = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
+    const [value, setValue] = useState("");
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -24,25 +24,25 @@ const AppContainer = (input) => {
             setObserverId(null);
         };
 
-    }, []);
-
-    /***************************************************************/
-    const contentFactory = () => {
-        if(input.content === "fonts"){
-            return <Fonts/>
-        }
-        else if(input.content === "font"){
-            return <Font/>
-        }
-    }
+    }, []);    
     /***************************************************************/
     return (
-        <div>
-            <h1>Admin</h1>
-            {contentFactory()}
-        </div>
+            <Input
+                onChange={(e) => {
+                    if(e.target.value.trim() === ""){
+                        input.handleFilter(null);
+                    }
+                    else{
+                        const temp = input.data.filter((d) => {
+                            return input.filter(d, e.target.value.trim().toLowerCase());
+                        });
+                        input.handleFilter(temp);
+                    }
+                }}
+            />
     );
+    /***************************************************************/
 }
 
-export default AppContainer;
+export default Search;
 /**************************************************************/

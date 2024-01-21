@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { observerManager } from "../../models/AppManager/managers.js";
-import Fonts from "../Admin/Fonts/Fonts.js";
-import Font from "../Admin/Font/Font.js";
-import "./AppContainer.scss";
+import {observerManager} from "../../../../models/AppManager/managers.js";
+import {Input,Form, FormGroup, Button} from 'reactstrap';
+import "./FontStyles.scss";
 
 /***************************************************************/
-const AppContainer = (input) => {
+const FontStyles = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
+
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -25,24 +25,28 @@ const AppContainer = (input) => {
         };
 
     }, []);
-
     /***************************************************************/
-    const contentFactory = () => {
-        if(input.content === "fonts"){
-            return <Fonts/>
-        }
-        else if(input.content === "font"){
-            return <Font/>
-        }
+    const makeStyles = (styles) => {
+        return styles.map((s,i) => {
+            return (<option value={s}>{s}</option>)
+        });
     }
-    /***************************************************************/
+    /***************************************************************/    
     return (
-        <div>
-            <h1>Admin</h1>
-            {contentFactory()}
-        </div>
+        <Form>
+            <FormGroup>
+                <Input
+                data-font-id={input.fontId}    
+                bsSize="sm"
+                className="mb-3"
+                type="select">{makeStyles(input.styles)}
+                </Input>
+                <Button data-font-id={input.fontId} color="primary">View Character Set</Button>
+            </FormGroup>
+        </Form>
     );
+    /***************************************************************/
 }
 
-export default AppContainer;
+export default FontStyles;
 /**************************************************************/

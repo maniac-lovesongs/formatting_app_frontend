@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { observerManager } from "../../../models/AppManager/managers.js";
-import { List, Table, Input} from 'reactstrap';
+import { Table, Input, Container,Row,Col} from 'reactstrap';
+import FontStyles from './FontStyles/FontStyles.js';
+import Search from '../../Search/Search.js';
 import PaginationLinks from "../../PaginationLinks/PaginationLinks.js";
 import utils from '../../../utils/utils.js';
 import constants from '../../../utils/constants.js';
@@ -13,9 +15,11 @@ const Fonts = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
     const [fonts, setFonts] = useState([]);
+    const [displayedFonts, setDisplayedFonts] = useState([]);
+    const [fontsLookup, setFontsLookUp] = useState({});
     const [numElements, setNumElements] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
-    const [range,setRange] = useState([1,10]);
+    const [range,setRange] = useState([1,constants.NUM_PER_PAGE]);
     
     /***************************************************************/
     useEffect(() => {
@@ -40,37 +44,45 @@ const Fonts = (input) => {
         // flask server it will be redirected to proxy
         fetch(utils.make_backend("/api/fonts/all")).then((res) =>
             res.json().then((data) => {
+                const temp = {};
+                data.fonts.forEach((elm,i) => {
+                    temp[elm.id] = {
+                        "font": elm                   
+                    };
+                });
+                setFontsLookUp(temp);
                 setNumElements(data.fonts.length);
+                setDisplayedFonts(data.fonts);
                 setFonts(data.fonts);
             })
         );
     }, []);
     /***************************************************************/
-    const makeStyles = (styles) => {
-        return styles.map((s,i) => {
-            return (<option>{s}</option>)
-        });
+    const handleFilter = (filteredData) => {
+        if(filteredData === null)
+            filteredData = fonts; 
+        setDisplayedFonts(filteredData);
+        const end = filteredData.length < constants.NUM_PER_PAGE? filteredData.length : constants.NUM_PER_PAGE;
+        setPageNumber(0);
+        setRange([1,end]);
     }
     /***************************************************************/
     const makeFonts = (fonts) => {
+        fonts.sort(sortBy('name'));
         return fonts.slice(range[0]-1,range[1]).map((f,i) => {
             return (
                 <tr>
                     <td>{range[0] + i}</td>
                     <td>{f.id}</td>
-                    <td>{f.name}</td>
+                    <td data-font-id={f.id}>{f.name}</td>
                     <td>
-                        <Input     
-                            bsSize="sm"
-                            className="mb-3"
-                            type="select">{makeStyles(f.styles)}
-                    </Input>
+                        <FontStyles styles={f.styles} fontId={f.id}/>
                     </td>
                     <td>
-                        <Input type="checkbox" />
+                        <Input data-font-id={f.id} type="checkbox" />
                     </td>
                     <td>
-                        <Input type="checkbox" />
+                        <a href={"/admin/fonts/view/" + f.id}>View</a>
                     </td>
                 </tr>
             )
@@ -88,29 +100,60 @@ const Fonts = (input) => {
     return (
         <div>
             <h2>Fonts</h2>
-            <List type="unstyled">
-                <li><b>Number of Fonts: </b>{fonts.length}</li>
-                <li>Showing {range[0]} to {range[1]}</li>
-            </List>
-            <Table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>id</th>
-                        <th>Name</th>
-                        <th>Styles</th>
-                        <th>Delete</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {makeFonts(fonts)}
-                </tbody>            
-            </Table>
-            <PaginationLinks 
-                pageNumber={pageNumber}
-                setPageNumber={handlePageNumberChanged}
-                numElements={fonts.length}/>
+            <Container>
+                <Row xs="1">
+                    <Col className="bg-light border">
+                        <h2>View All</h2>
+                    </Col>
+                </Row>
+                <Row xs="4">
+                    <Col className="bg-light border">
+                        <b>Number of Fonts: </b> <p>{displayedFonts.length > 0 && displayedFonts.length}</p>
+                    </Col>
+                    <Col className="bg-light border">
+                        <b>Showing</b> 
+                        <p>{range[0]} to {range[1]}</p>      
+                    </Col>
+                    <Col className="bg-light border">
+                        <b>Search</b> 
+                        <Search 
+                        handleFilter={handleFilter}
+                        filter={(d,v) => {
+                            let re = new RegExp(`^${v}`, 'g');
+                            return d.name.toLowerCase().match(re);
+                        }}
+                        data={fonts}
+                        displayedFonts={displayedFonts}/>     
+                    </Col>
+                    <Col className="bg-light border">
+                        <b>Filter</b> 
+                        <p>{range[0]} to {range[1]}</p>      
+                    </Col>
+                </Row>
+                <Row xs="1">
+                    <Col className="bg-light border">
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>id</th>
+                                        <th>Name</th>
+                                        <th>Styles</th>
+                                        <th>Delete</th>
+                                        <th>View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {makeFonts(displayedFonts)}
+                                </tbody>            
+                            </Table>
+                            <PaginationLinks 
+                                pageNumber={pageNumber}
+                                setPageNumber={handlePageNumberChanged}
+                                numElements={displayedFonts.length}/>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 }
