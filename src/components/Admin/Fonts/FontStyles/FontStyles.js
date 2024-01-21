@@ -36,6 +36,7 @@ const FontStyles = (input) => {
         <Form>
             <FormGroup>
                 <Input
+                ref={ref}
                 data-font-id={input.fontId}    
                 bsSize="sm"
                 className="mb-3"

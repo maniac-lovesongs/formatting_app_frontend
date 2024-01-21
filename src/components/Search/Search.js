@@ -34,7 +34,8 @@ const Search = (input) => {
                     }
                     else{
                         const temp = input.data.filter((d) => {
-                            return input.filter(d, e.target.value.trim().toLowerCase());
+                            const v = e.target.value.trim().toLowerCase();
+                            return input.filter(d, v);
                         });
                         input.handleFilter(temp);
                     }

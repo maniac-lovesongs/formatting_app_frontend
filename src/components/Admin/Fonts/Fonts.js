@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { observerManager } from "../../../models/AppManager/managers.js";
-import { Table, Input, Container,Row,Col} from 'reactstrap';
+import { Table, Input, Form, FormGroup, Label, Container,Row,Col} from 'reactstrap';
 import FontStyles from './FontStyles/FontStyles.js';
 import Search from '../../Search/Search.js';
 import PaginationLinks from "../../PaginationLinks/PaginationLinks.js";
@@ -16,6 +16,7 @@ const Fonts = (input) => {
     const [observerId, setObserverId] = useState(null);
     const [fonts, setFonts] = useState([]);
     const [displayedFonts, setDisplayedFonts] = useState([]);
+    const [styleFilters, setStyleFilters] = useState([]);
     const [fontsLookup, setFontsLookUp] = useState({});
     const [numElements, setNumElements] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
@@ -108,7 +109,7 @@ const Fonts = (input) => {
                 </Row>
                 <Row xs="4">
                     <Col className="bg-light border">
-                        <b>Number of Fonts: </b> <p>{displayedFonts.length > 0 && displayedFonts.length}</p>
+                        <b>Number of Fonts </b> <p>{displayedFonts.length > 0 && displayedFonts.length}</p>
                     </Col>
                     <Col className="bg-light border">
                         <b>Showing</b> 
@@ -120,14 +121,36 @@ const Fonts = (input) => {
                         handleFilter={handleFilter}
                         filter={(d,v) => {
                             let re = new RegExp(`^${v}`, 'g');
-                            return d.name.toLowerCase().match(re);
+                            const matched = d.name.toLowerCase().match(re);
+                            console.log(styleFilters);
+                            return matched;
                         }}
                         data={fonts}
                         displayedFonts={displayedFonts}/>     
                     </Col>
                     <Col className="bg-light border">
                         <b>Filter</b> 
-                        <p>{range[0]} to {range[1]}</p>      
+                        <p><i>Styles: </i></p>      
+                        <Form>
+                            <FormGroup>
+                                <FormGroup>
+                                    <Input id="normal_checkbox" name="normal" type="checkbox" />
+                                    <Label check>normal</Label>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input id="bold_checkbox" name="bold" type="checkbox" />
+                                    <Label check>bold</Label>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input id="italic_checkbox" name="italic" type="checkbox" />
+                                    <Label check>italic</Label>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input id="bold_italic_checkbox" name="bold italic" type="checkbox" />
+                                    <Label check>bold italic</Label>
+                                </FormGroup>
+                            </FormGroup>
+                        </Form>
                     </Col>
                 </Row>
                 <Row xs="1">
