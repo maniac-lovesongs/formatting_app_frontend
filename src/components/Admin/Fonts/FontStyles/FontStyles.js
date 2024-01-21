@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {observerManager} from "../../../../models/AppManager/managers.js";
+import {appManager, observerManager} from "../../../../models/AppManager/managers.js";
 import {Input,Form, FormGroup, Button} from 'reactstrap';
 import "./FontStyles.scss";
 
@@ -7,18 +7,21 @@ import "./FontStyles.scss";
 const FontStyles = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
+    const [style, setStyle] = useState();
 
     /***************************************************************/
     useEffect(() => {
         // register a listener 
         if (observerId === null) {
             const id = observerManager.registerListener((dataChanged) => {
-                //console.log("Something interesting happened to the app, and as a listener I need to update ");
+                if(dataChanged === "style"){
+                    setStyle(appManager.getStyle());
+                }
             });
             setObserverId(id);
         }
-
-        // once the component unmounts, remove the listener
+        const tempStyle = input.styles.includes("normal")? "normal" : input.styles[0];
+        appManager.setStyle(tempStyle);
         return () => {
             observerManager.unregisterListener(observerId);
             setObserverId(null);
@@ -31,19 +34,31 @@ const FontStyles = (input) => {
             return (<option value={s}>{s}</option>)
         });
     }
+    /***************************************************************/
+    const handleStyleChange = (s) => {
+        appManager.setStyle(s);
+        //input.handleStyleChange(s);
+    }
     /***************************************************************/    
     return (
         <Form>
             <FormGroup>
                 <Input
                 ref={ref}
-                data-font-id={input.fontId}    
+                data-font-id={input.fontId}   
+                value={style}
+                onChange={(e) => {
+                    setStyle(e.target.value);
+                }} 
                 bsSize="sm"
                 className="mb-3"
                 type="select">{makeStyles(input.styles)}
                 </Input>
                 {input.addLinks && <Button 
-                    type="submit" 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleStyleChange(style);
+                    }}
                     data-font-id={input.fontId} 
                     data-font-name={input.fontName}
                     color="primary">View Character Set</Button>}

@@ -51,7 +51,7 @@ const PaginationLinks = (input) => {
     const makePaginationItems = (n) => {
         const items = [];
         for(let i = 0; i < n; i++){
-            items.push((<PaginationItem>
+            items.push((<PaginationItem key={input.objectName + i}>
                 <PaginationLink 
                 onClick={(e) => {
                     handleOnClick(e,i)

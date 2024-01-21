@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { observerManager } from "../../../models/AppManager/managers.js";
+import { appManager, observerManager } from "../../../models/AppManager/managers.js";
 import {Nav,
     NavItem,
     NavLink, 
@@ -54,12 +54,22 @@ const Font = (input) => {
     }, []);
     
     /***************************************************************/
+    const handleStyleChange = (s) => {
+        setCharacterSet(s);
+    }
+    /***************************************************************/
     const contentFactory = (font) => {
         if(font && mode === "view")
-            return <FontViewMode id={id} font={font}/>
+            return <FontViewMode id={id} font={font} handleStyleChange={handleStyleChange}/>
         else if(font && mode === "edit")
             return <FontEditMode id={id} name={font.name}/>
         return null; 
+    }
+    /***************************************************************/
+    const characterSetFactory = (font,style) => {
+        if(font)
+            return <CharacterSet font={font} style={style} />
+        return null;
     }
     /***************************************************************/
     return (
@@ -100,7 +110,7 @@ const Font = (input) => {
                 </Row>
                 {contentFactory(font)}
                 <Row>
-                    {font && <CharacterSet font={font} style={characterSet} />}
+                    {characterSetFactory(font,characterSet)}
                 </Row>
             </Container>
         </div>

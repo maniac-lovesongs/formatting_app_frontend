@@ -8,7 +8,6 @@ import {
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-console.log("This is the first node");
 root.render(
   <React.StrictMode>
     <BrowserRouter basename="/">

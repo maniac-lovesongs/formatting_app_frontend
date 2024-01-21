@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { observerManager } from "../../../models/AppManager/managers.js";
+import { appManager, observerManager } from "../../../models/AppManager/managers.js";
 import { Row, Col} from 'reactstrap';
 import FontStyles from '../Fonts/FontStyles/FontStyles.js';
 import "./Font.scss";
@@ -18,7 +18,7 @@ const FontViewMode = (input) => {
             });
             setObserverId(id);
         }
-
+        appManager.setFont(input.font.name);
         // once the component unmounts, remove the listener
         return () => {
             observerManager.unregisterListener(observerId);
@@ -33,7 +33,12 @@ const FontViewMode = (input) => {
                         <b>Name: </b> <p>{input.font.name}</p>
                     </Col>
                     <Col className="bg-light border">
-                        <b>Styles: </b>{<FontStyles addLinks={true} fontName={input.font.name} fontId={input.id} styles={input.font.styles} />}                
+                        <b>Styles: </b>{<FontStyles 
+                        handleStyleChange={input.handleStyleChange} 
+                        addLinks={true} 
+                        fontName={input.font.name} 
+                        fontId={input.id} 
+                        styles={input.font.styles} />}                
                     </Col>
                 </Row>        
     );

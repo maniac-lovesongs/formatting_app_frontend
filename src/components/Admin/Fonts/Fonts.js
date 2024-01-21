@@ -204,6 +204,7 @@ const Fonts = (input) => {
                                 </tbody>            
                             </Table>
                             <PaginationLinks 
+                                objectName="fonts"
                                 pageNumber={pageNumber}
                                 setPageNumber={handlePageNumberChanged}
                                 numElements={displayedFonts.length}/>
