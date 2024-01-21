@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { observerManager } from "../../../models/AppManager/managers.js";
 import { List, Table, Input} from 'reactstrap';
 import PaginationLinks from "../../PaginationLinks/PaginationLinks.js";
-import { useParams } from "react-router-dom";
 import utils from '../../../utils/utils.js';
 import constants from '../../../utils/constants.js';
 import sortBy from "sort-by";
@@ -109,6 +108,7 @@ const Fonts = (input) => {
                 </tbody>            
             </Table>
             <PaginationLinks 
+                pageNumber={pageNumber}
                 setPageNumber={handlePageNumberChanged}
                 numElements={fonts.length}/>
         </div>

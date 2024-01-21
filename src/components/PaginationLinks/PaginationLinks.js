@@ -8,6 +8,7 @@ import "./PaginationLinks.scss";
 const PaginationLinks = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
+    const [pageNumber, setPageNumber] = useState(input.pageNumber);
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -33,9 +34,18 @@ const PaginationLinks = (input) => {
     }
     /***************************************************************/
     const handleOnClick = (e,i) => {
-        console.log("We are in a link " + i);
         e.preventDefault();
+        setPageNumber(i);
         input.setPageNumber(i);
+    }
+    /***************************************************************/
+    const handlePrev = (e) => {
+        e.preventDefault();
+        const temp = pageNumber - 1; 
+        if(temp >= 0){
+            setPageNumber(temp);
+            input.setPageNumber(temp);
+        }
     }
     /***************************************************************/
     const makePaginationItems = (n) => {
@@ -55,17 +65,42 @@ const PaginationLinks = (input) => {
         return items;
     }
     /***************************************************************/
+    const handleGoToFirstPage = (e) => {
+        e.preventDefault();
+        setPageNumber(0);
+        input.setPageNumber(0);
+    }
+    /***************************************************************/
+    const handleGoToLastPage = (e) => {
+        e.preventDefault();
+        const lastPage = determineNumPages(input.numElements) - 1; 
+        setPageNumber(lastPage);
+        input.setPageNumber(lastPage);
+    }
+    /***************************************************************/
+    const handleNext = (e) => {
+        e.preventDefault();
+        const temp = pageNumber + 1; 
+        const lastPage = determineNumPages(input.numElements) - 1; 
+        if(temp <= lastPage){
+            setPageNumber(temp);
+            input.setPageNumber(temp);
+        }
+    }
+    /***************************************************************/
     return (
         <Pagination>
             <PaginationItem>
                 <PaginationLink
                 first
+                onClick={handleGoToFirstPage}
                 href="#"
                 />
             </PaginationItem>
             <PaginationItem>
                 <PaginationLink
                 href="#"
+                onClick={handlePrev}
                 previous
                 />
             </PaginationItem>
@@ -73,12 +108,14 @@ const PaginationLinks = (input) => {
             <PaginationItem>
                 <PaginationLink
                 next
+                onClick={handleNext}
                 href="#"
                 />
             </PaginationItem>
             <PaginationItem>
                 <PaginationLink
                 href="#"
+                onClick={handleGoToLastPage}
                 last
                 />
             </PaginationItem>
