@@ -16,8 +16,8 @@ const Fonts = (input) => {
     const [observerId, setObserverId] = useState(null);
     const [fonts, setFonts] = useState([]);
     const [displayedFonts, setDisplayedFonts] = useState([]);
-    const [styleFilters, setStyleFilters] = useState([]);
-    const [fontsLookup, setFontsLookUp] = useState({});
+    const [styleFilters, setStyleFilters] = useState({"normal": false, "bold": false, "bold italic": false, "italic": false});
+    const [searchValue, setSearchValue] = useState("");
     const [numElements, setNumElements] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
     const [range,setRange] = useState([1,constants.NUM_PER_PAGE]);
@@ -45,13 +45,6 @@ const Fonts = (input) => {
         // flask server it will be redirected to proxy
         fetch(utils.make_backend("/api/fonts/all")).then((res) =>
             res.json().then((data) => {
-                const temp = {};
-                data.fonts.forEach((elm,i) => {
-                    temp[elm.id] = {
-                        "font": elm                   
-                    };
-                });
-                setFontsLookUp(temp);
                 setNumElements(data.fonts.length);
                 setDisplayedFonts(data.fonts);
                 setFonts(data.fonts);
@@ -90,6 +83,30 @@ const Fonts = (input) => {
         });
     }
     /***************************************************************/
+    const styleFilterer = (f,styles) => {
+            const allStyles = Object.keys(styles);
+            for(let i = 0; i < allStyles.length; i++){
+                const s = allStyles[i];
+                if(styles[s] && !f.styles.includes(s))
+                    return false; 
+            }
+            return true;
+    }
+    /***************************************************************/
+    const handleStyleFilter = (e) => {
+        const style = e.target.name.trim();
+        const checked = e.target.checked;
+        let temp_styleFilters = {...styleFilters};
+        temp_styleFilters[style] = checked;
+
+        const filtered_data = fonts.filter((f) => {
+            return styleFilterer(f,temp_styleFilters);
+        });
+
+        setDisplayedFonts(filtered_data);
+        setStyleFilters(temp_styleFilters);
+    };
+    /***************************************************************/
     const handlePageNumberChanged = (pageNumber) => {
         const start = pageNumber*constants.NUM_PER_PAGE + 1;
         const temp = (pageNumber + 1)*constants.NUM_PER_PAGE;
@@ -119,10 +136,10 @@ const Fonts = (input) => {
                         <b>Search</b> 
                         <Search 
                         handleFilter={handleFilter}
+                        setSearchValue={setSearchValue}
                         filter={(d,v) => {
                             let re = new RegExp(`^${v}`, 'g');
                             const matched = d.name.toLowerCase().match(re);
-                            console.log(styleFilters);
                             return matched;
                         }}
                         data={fonts}
@@ -134,19 +151,35 @@ const Fonts = (input) => {
                         <Form>
                             <FormGroup>
                                 <FormGroup>
-                                    <Input id="normal_checkbox" name="normal" type="checkbox" />
+                                    <Input 
+                                    onChange={handleStyleFilter}
+                                    id="normal_checkbox" 
+                                    name="normal" 
+                                    type="checkbox" />
                                     <Label check>normal</Label>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Input id="bold_checkbox" name="bold" type="checkbox" />
+                                    <Input 
+                                    onChange={handleStyleFilter}
+                                    id="bold_checkbox" 
+                                    name="bold" 
+                                    type="checkbox" />
                                     <Label check>bold</Label>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Input id="italic_checkbox" name="italic" type="checkbox" />
+                                    <Input
+                                    onChange={handleStyleFilter} 
+                                    id="italic_checkbox" 
+                                    name="italic" 
+                                    type="checkbox" />
                                     <Label check>italic</Label>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Input id="bold_italic_checkbox" name="bold italic" type="checkbox" />
+                                    <Input
+                                     onChange={handleStyleFilter}
+                                     id="bold_italic_checkbox" 
+                                     name="bold italic" 
+                                     type="checkbox" />
                                     <Label check>bold italic</Label>
                                 </FormGroup>
                             </FormGroup>

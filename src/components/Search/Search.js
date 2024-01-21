@@ -7,7 +7,6 @@ import "./Search.scss";
 const Search = (input) => {
     const ref = useRef(null);
     const [observerId, setObserverId] = useState(null);
-    const [value, setValue] = useState("");
     /***************************************************************/
     useEffect(() => {
         // register a listener 
@@ -30,6 +29,7 @@ const Search = (input) => {
             <Input
                 onChange={(e) => {
                     if(e.target.value.trim() === ""){
+                        input.setSearchValue("");
                         input.handleFilter(null);
                     }
                     else{
@@ -37,6 +37,7 @@ const Search = (input) => {
                             const v = e.target.value.trim().toLowerCase();
                             return input.filter(d, v);
                         });
+                        input.setSearchValue(e.target.trim().toLowerCase());
                         input.handleFilter(temp);
                     }
                 }}
