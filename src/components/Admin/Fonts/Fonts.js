@@ -70,7 +70,7 @@ const Fonts = (input) => {
                     <td>{f.id}</td>
                     <td data-font-id={f.id}>{f.name}</td>
                     <td>
-                        <FontStyles fontName={f.name} styles={f.styles} fontId={f.id}/>
+                        <FontStyles addLinks={false} fontName={f.name} styles={f.styles} fontId={f.id}/>
                     </td>
                     <td>
                         <Input data-font-id={f.id} type="checkbox" />

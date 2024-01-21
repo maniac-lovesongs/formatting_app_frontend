@@ -48,7 +48,6 @@ const Font = (input) => {
             res.json().then((data) => {
                 setFont(data.font);
                 const charSet = data.font.styles.includes("normal")? "normal" : data.font.styles[0];
-                console.log("The character set is " + charSet);
                 setCharacterSet(charSet);
             })
         );

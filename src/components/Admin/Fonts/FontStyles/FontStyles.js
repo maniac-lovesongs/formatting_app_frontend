@@ -42,11 +42,11 @@ const FontStyles = (input) => {
                 className="mb-3"
                 type="select">{makeStyles(input.styles)}
                 </Input>
-                <Button 
+                {input.addLinks && <Button 
                     type="submit" 
                     data-font-id={input.fontId} 
                     data-font-name={input.fontName}
-                    color="primary">View Character Set</Button>
+                    color="primary">View Character Set</Button>}
             </FormGroup>
         </Form>
     );
