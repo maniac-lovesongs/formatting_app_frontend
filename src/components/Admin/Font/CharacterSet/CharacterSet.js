@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { appManager, observerManager } from "../../../../models/AppManager/managers.js";
-import { Table, Input, Container,Row,Col} from 'reactstrap';
+import { Table, Input, Container,Row,Col, Form, FormGroup, Label} from 'reactstrap';
 import Search from '../../../Search/Search.js';
 import PaginationLinks from "../../../PaginationLinks/PaginationLinks.js";
 import utils from '../../../../utils/utils.js';
@@ -17,6 +17,7 @@ const CharacterSet = (input) => {
     const [displayedCharacters, setDisplayedCharacters] = useState([]);
     const [searchValue, setSearchValue] = useState("");
     const [numElements, setNumElements] = useState(0);
+    const [setFilters, setSetFilters] = useState({"lowercase": false, "uppercase": false, "numbers": false});
     const [style, setStyle] = useState(input.style);
     const [fontName, setFontName] = useState(input.font.name);
     const [pageNumber, setPageNumber] = useState(0);
@@ -63,11 +64,43 @@ const CharacterSet = (input) => {
     useEffect(() => {
         getCharacterSet(input.style,input.font.name);
     }, []);
+    /***************************************************************/
+    const setFilterer = (c,s) => {
+        const lowercase = "abcdefghijklmnopqrstuvwxyz".split("");
+        const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        const numbers = "0123456789".split("");
+
+        const inLowercase = s["lowercase"] && lowercase.includes(c.value);
+        const inUppercase = s["uppercase"] && uppercase.includes(c.value);
+        const inNumbers = s["numbers"] && numbers.includes(c.value);
+        
+        return inLowercase || inNumbers || inUppercase;
+    }
+    /***************************************************************/
+    const handleSetFilter = (e) => {
+        const s = e.target.name.trim();
+        const checked = e.target.checked;
+        let temp_setFilters = {...setFilters};
+        temp_setFilters[s] = checked;
+
+        if(!temp_setFilters["lowercase"] && !temp_setFilters["uppercase"] && !temp_setFilters["numbers"]){
+            setDisplayedCharacters(characters);
+      
+        }else{
+            const filtered_data = characters.filter((c) => {
+                return setFilterer(c,temp_setFilters);
+            });
+    
+            setDisplayedCharacters(filtered_data);
+        }
+        setSetFilters(temp_setFilters);
+        setPageNumber(0);      
+    };
     /*********************************************************************/
     const handleFilter = (filteredData) => {
         if(filteredData === null)
             filteredData = characters; 
-        //setDisplayedFonts(filteredData);
+        setDisplayedCharacters(filteredData);
         const end = filteredData.length < constants.NUM_PER_PAGE? filteredData.length : constants.NUM_PER_PAGE;
         setPageNumber(0);
         setRange([1,end]);
@@ -127,7 +160,7 @@ const CharacterSet = (input) => {
                         setSearchValue={setSearchValue}
                         filter={(d,v) => {
                             let re = new RegExp(`^${v}`, 'g');
-                            const matched = d.name.toLowerCase().match(re);
+                            const matched = d.value.toLowerCase().match(re);
                             return matched;
                         }}
                         data={characters}
@@ -135,6 +168,35 @@ const CharacterSet = (input) => {
                     </Col>
                     <Col className="bg-light border">
                         <b>Filter</b> 
+                        <p><i>Sets: </i></p>      
+                        <Form>
+                            <FormGroup>
+                                <FormGroup>
+                                    <Input 
+                                    onChange={handleSetFilter}
+                                    id="uppercase_checkbox" 
+                                    name="uppercase" 
+                                    type="checkbox" />
+                                    <Label check>uppercase letters</Label>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input 
+                                    onChange={handleSetFilter}
+                                    id="lowercase_checkbox" 
+                                    name="lowercase" 
+                                    type="checkbox" />
+                                    <Label check>lowercase letters</Label>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input
+                                    onChange={handleSetFilter} 
+                                    id="numbers_checkbox" 
+                                    name="numbers" 
+                                    type="checkbox" />
+                                    <Label check>numbers</Label>
+                                </FormGroup>
+                            </FormGroup>
+                        </Form>
                     </Col>
                 </Row>
                 <Row xs="1">
